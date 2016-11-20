@@ -30,6 +30,23 @@ from geraldo.cache import make_hash_key, get_cache_backend, CACHE_DISABLED
 from geraldo.charts import BaseChart
 from geraldo.exceptions import AbortEvent
 
+####Editado por thiagopena, 
+####classe usada para a impressao do canhoto vertical da DANFE em formato paisagem
+class RotatedParagraph(Paragraph):
+    def drawOn(self, canvas, x, y, _sW=0):
+        x = self._hAlignAdjust(x,_sW)
+        canvas.saveState()
+        canvas.translate(x, y)
+        canvas.rotate(90)
+        canvas.translate(6,-11)
+        self._drawOn(canvas)
+        if hasattr(self, '_showBoundary') and self._showBoundary:
+            #diagnostic tool support
+            canvas.setStrokeColor(gray)
+            canvas.rect(0,0,self.width, self.height)
+        canvas.restoreState()
+########
+
 class PDFGenerator(ReportGenerator):
     """This is a generator to output a PDF using ReportLab library with
     preference by its Platypus API"""
@@ -388,8 +405,14 @@ class PDFGenerator(ReportGenerator):
 
         # This includes also the SystemField above
         if isinstance(widget, Label):
-            para = Paragraph(widget.text, self.make_paragraph_style(widget.band, widget.style))
-            para.wrapOn(canvas, widget.width, widget.height)
+            #####Editado por thiagopena, canhoto vertical da DANFE paisagem
+            if '_vertical' in getattr(widget, 'name', u''):
+                para = RotatedParagraph(widget.text, self.make_paragraph_style(widget.band, widget.style))
+                para.wrapOn(canvas, widget.width, widget.height)
+            else:
+                para = Paragraph(widget.text, self.make_paragraph_style(widget.band, widget.style))
+                para.wrapOn(canvas, widget.width, widget.height)
+            ###########
 
             if widget.truncate_overflow:
                 keep = self.keep_in_frame(
