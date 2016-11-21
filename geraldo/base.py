@@ -1,4 +1,5 @@
 import copy, types
+from six import with_metaclass
 
 try:
     set
@@ -383,7 +384,7 @@ def get_report_class_by_registered_id(reg_id):
 
     return None
 
-class Report(BaseReport, metaclass=ReportMetaclass):
+class Report(with_metaclass(ReportMetaclass, BaseReport)):
     """This class must be inherited to be used as a new report.
 
     A report has bands and is driven by a QuerySet. It can have a title and
