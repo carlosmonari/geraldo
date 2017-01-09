@@ -6,7 +6,7 @@ class Graphic(Element):
     stroke = True
     stroke_color = black
     stroke_width = 1
-
+        
     fill = False
     fill_color = black
 
@@ -16,7 +16,7 @@ class Graphic(Element):
     def __init__(self, **kwargs):
         for k,v in list(kwargs.items()):
             setattr(self, k, v)
-
+            
     def set_rect(self, **kwargs):
         """This method will adapt the graphic element in a rect."""
         self.left = kwargs.get('left', self.left)
@@ -70,7 +70,7 @@ class Fixed(Graphic):
     top = None
     right = None
     bottom = None
-
+        
     _repr_for_cache_attrs = ('left','top','height','width','visible','stroke',
             'stroke_color','stroke_width','fill','fill_color','right','bottom')
 
@@ -99,7 +99,13 @@ class Fixed(Graphic):
 
 class Line(Fixed):
     """A simple line"""
-
+    
+    dash = None
+    
+    def __init__(self, **kwargs):
+        self.dash = kwargs.get('dash', None)
+        super(Line, self).__init__(**kwargs)
+            
     def height(self):
         return self.bottom - self.top
     height = property(height)
@@ -107,6 +113,12 @@ class Line(Fixed):
     def width(self):
         return self.right - self.left
     width = property(width)
+    
+    def clone(self):
+        new = super(Line, self).clone()
+        new.dash = self.dash
+        
+        return new
 
 class Circle(Graphic):
     """A simple circle"""

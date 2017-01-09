@@ -312,7 +312,11 @@ class PDFGenerator(ReportGenerator):
     def set_stroke_width(self, width):
         """Sets the stroke/line width for shapes"""
         self.canvas.setLineWidth(width)
-
+    
+    ####Editado
+    def set_dash_line(self, dash):
+        self.canvas.setDash(dash[0], dash[1])
+    ######
     def make_paragraph_style(self, band, style=None):
         """Merge report default_style + band default_style + widget style"""
         d_style = self.report.default_style.copy()
@@ -373,7 +377,7 @@ class PDFGenerator(ReportGenerator):
                     self.set_fill_color(graphic.fill_color)
                     self.set_stroke_color(graphic.stroke_color)
                     self.set_stroke_width(graphic.stroke_width)
-
+                    
                     self.generate_graphic(graphic, self.canvas)
 
             self.canvas.showPage()
@@ -405,7 +409,7 @@ class PDFGenerator(ReportGenerator):
 
         # This includes also the SystemField above
         if isinstance(widget, Label):
-            #####Editado por thiagopena, canhoto vertical da DANFE paisagem
+            #####Editado por thiagopena
             if '_vertical' in getattr(widget, 'name', u''):
                 para = RotatedParagraph(widget.text, self.make_paragraph_style(widget.band, widget.style))
                 para.wrapOn(canvas, widget.width, widget.height)
@@ -413,7 +417,6 @@ class PDFGenerator(ReportGenerator):
                 para = Paragraph(widget.text, self.make_paragraph_style(widget.band, widget.style))
                 para.wrapOn(canvas, widget.width, widget.height)
             ###########
-
             if widget.truncate_overflow:
                 keep = self.keep_in_frame(
                         widget,
@@ -434,7 +437,7 @@ class PDFGenerator(ReportGenerator):
     def generate_graphic(self, graphic, canvas=None):
         """Renders a graphic element"""
         canvas = canvas or self.canvas
-
+        
         # Calls the before_print event
         try:
             graphic.do_before_print(generator=self)
@@ -444,7 +447,7 @@ class PDFGenerator(ReportGenerator):
         # Exits if is not visible
         if not graphic.visible:
             return
-
+        
         if isinstance(graphic, RoundRect):
             canvas.roundRect(
                     graphic.left,
@@ -465,12 +468,17 @@ class PDFGenerator(ReportGenerator):
                     graphic.fill,
                     )
         elif isinstance(graphic, Line):
+            ####Editado
+            if graphic.dash:
+                self.set_dash_line(graphic.dash)
             canvas.line(
                     graphic.left,
                     graphic.top,
                     graphic.right,
                     graphic.bottom,
                     )
+            canvas.setDash(1,0)
+            #####
         elif isinstance(graphic, Circle):
             canvas.circle(
                     graphic.left_center,

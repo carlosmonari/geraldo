@@ -56,6 +56,10 @@ class BarCode(Graphic):
     routing_attribute = None
     aditional_barcode_params = {}
     get_value = None # A lambda function to get customized values
+    
+    #QRCode
+    qr_level = 'L'
+    border   = 4
 
     def clone(self):
         new = super(BarCode, self).clone()
@@ -66,6 +70,9 @@ class BarCode(Graphic):
         new.checksum = self.checksum
         new.routing_attribute = self.routing_attribute
         new.aditional_barcode_params = self.aditional_barcode_params
+        
+        new.qr_level = self.qr_level
+        new.border   = self.border
 
         return new
 
@@ -80,13 +87,21 @@ class BarCode(Graphic):
         if not getattr(self, '_rendered_drawing', None):
             kwargs = self.aditional_barcode_params
             kwargs['value'] = self.get_object_value()
-
+            
             if 'barWidth' not in kwargs:
                 kwargs['barWidth'] = self.width
 
             if 'barHeight' not in kwargs:
                 kwargs['barHeight'] = self.height
-
+            
+            ##QRCode
+            if 'barLevel' not in kwargs:
+                kwargs['barLevel'] = self.qr_level
+                
+            if 'barBorder' not in kwargs:
+                kwargs['barBorder'] = self.border
+            ####
+                
             if self.type in ('EAN13','EAN8','QR'):
                 self._rendered_drawing = createBarcodeDrawing(self.type, **kwargs)
             else:
@@ -121,3 +136,4 @@ class BarCode(Graphic):
         self._width = value
 
     width = property(_get_width, _set_width)
+    
