@@ -43,12 +43,11 @@ Packages Structure
 - tests - a package with automated doc tests.
 """
 
-from .version import VERSION, get_version
+from .version import __version__
 
 __author__ = 'Marinho Brandao'
 __license__ = 'GNU Lesser General Public License (LGPL)'
 __url__ = 'http://geraldo.sourceforge.net/'
-__version__ = get_version()
 
 from .base import Report, ReportBand, DetailBand, TableBand, ReportGroup,\
         SubReport, landscape, GeraldoObject, ManyElements, CROSS_COLS
