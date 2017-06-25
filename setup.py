@@ -9,11 +9,11 @@ except:
     from setuptools import setup, find_packages
 
 from setuptools import setup
-from geraldo.version import get_version
+from geraldo.version import __version__
 
 setup(
     name = 'Geraldo',
-    version = get_version(),
+    version = __version__,
     description = 'Geraldo is a reports engine for Python and Django applications',
     long_description = 'Geraldo is a Python and Django pluggable application that works with ReportLab to generate complex reports.',
     author = 'Marinho Brandao',
